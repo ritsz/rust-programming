@@ -10,6 +10,7 @@
    4. Mutable variables can have mutable moves.
    5. Borrowed variables can be borrowed again.
    6. Borrowed variables can't be moved by borrower. Moves can only happen from original owner.
+   7. Borrowed varibles can be further borrowed.
  */
 fn main() {
     let (string, z)   = ("Hello World".to_string(), "Original String".to_string());
@@ -25,6 +26,9 @@ fn main() {
     let borrow_string:&String = &z;
     immutable_borrow(borrow_string, 5);
     println!("6. {}", immutable_borrow_move(borrow_string, 6));
+
+    let mut mut_string = "THIS IS MUTABLE".to_string();
+    mutable_borrow_borrow(&mut mut_string, 7);
 
 }
 
@@ -54,3 +58,7 @@ fn immutable_borrow_move(x: &String, index: u32) -> String {
     "Dummy".to_string()
 }
 
+fn mutable_borrow_borrow(x: &mut String, index: u32) -> &mut String {
+    println!("{}. {}", index, x);
+    x
+}
