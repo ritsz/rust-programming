@@ -1,4 +1,4 @@
-
+use std::fs::File;
 use std::fmt;
 
 enum Message {
@@ -43,6 +43,14 @@ fn show_point(msg: Message::Move)
 }
 */
 
+fn OptionOpenFile(name: String) -> Option<File> {
+    let result = File::open(name);
+    match result {
+        Ok(file) => return Some(file),
+        Err(error) => None
+    }
+}
+
 fn main()
 {
     let x : Message = Message::Move{x:3, y:10};
@@ -80,4 +88,19 @@ fn main()
         Some(Person { name: Some(ref a), .. }) => println!("{:?}", a),
         _ => {}
     }
+
+    /* Pattern match on Result<File> */
+    let result = File::open("DoesntExists.txt");
+    match result {
+        Ok(ref file) => println!("Opened the file {:?}", file),
+        Err(ref some) => println!("Error {}", some),
+    }
+
+    let output = OptionOpenFile("DoesExist.txt".to_string());
+    match output {
+        Some(ref x) => println!("File is {:?}", x),
+        None    => println!("There was some error. Consumed"),
+    }
+    /* If we don't take as ref in Some(), this will give error as moved data. */
+    println!("{:?}", output);
 }
