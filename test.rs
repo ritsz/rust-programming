@@ -1,17 +1,24 @@
-use std::fmt::{Debug, Formatter, Result};
+use std::fmt::{Debug, Display, Formatter, Result};
 
 enum List<T> {
     Cons(T, Box<List<T>>),
     Nil,
 }
 
-impl Debug for List<std::string::String> {
+/*
+   impl Debug for List<String> can be made generic.
+   We can define this impl Debug on T where T implements Display
+ */
+impl<T> Debug for List<T> where T : Display {
     fn fmt(&self, f: &mut Formatter) -> Result {
         match *self {
-            List::Cons(ref ptr, ref X) => {
-                    write!(f,"{} ->", ptr)
-                    
+            List::Cons(ref value, ref ptr) => {
+                /* print of ptr will call Debug again. We are doing pattern matching in recursion here */
+                    print!("{:?}", ptr);
+                /* When all children are printed, write current data */
+                    write!(f,"{} -> ", value)
             }
+            /* Base case of finding a List::Nil, just return Ok */
             List::Nil => Ok(()),
         }
     }
@@ -22,10 +29,10 @@ fn main() {
     let leaf = Box::new(List::Cons(4, Box::new(List::Nil)));
     let list: List<i32> = List::Cons(1, Box::new(List::Cons(2, leaf)));
     let mut lea = Box::new(List::Nil);
+    /* Create linked list out of vector */
     for string in str_vec {
         lea = Box::new(List::Cons(string, lea));
     }
-    //println!("{:?}", list);
+    println!("{:?}", list);
     println!("{:?}", lea);
 }
-
