@@ -24,6 +24,15 @@ impl<T> Debug for List<T> where T : Display {
     }
 }
 
+/*
+   Using the where keyword we can add bound checks to what
+   what this function works for.
+   NOTE: x:&T takes the generic parameters as references
+   */
+fn printthis<T>(x:&T) where T : Display {
+    println!("{}", x);
+}
+
 fn main() {
     let str_vec = vec!["Hello".to_string(), "World".to_string(), "Good".to_string(), "Bye".to_string()];
     let leaf = Box::new(List::Cons(4, Box::new(List::Nil)));
@@ -35,4 +44,6 @@ fn main() {
     }
     println!("{:?}", list);
     println!("{:?}", lea);
+    let x : u32= 5;
+    printthis::<u32>(&x);
 }
