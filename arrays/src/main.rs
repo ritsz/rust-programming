@@ -14,12 +14,12 @@ impl Circle {
         Circle { x: x, y:y, radius:radius }
     }
 
-    /* All impl functions borrow a self reference of the data they work on */ 
+    /* All impl functions borrow a self reference of the data they work on */
     fn area(&self) -> f64 {
         std::f64::consts::PI * (self.radius * self.radius)
     }
 
-    /* Implementations that return the struct can be used for method chaining. 
+    /* Implementations that return the struct can be used for method chaining.
        This is returning a new instance, so original data is still unchanged
      */
     fn grow(&mut self, increment: f64) -> &mut Circle {
@@ -44,7 +44,7 @@ impl CircleBuilder {
         CircleBuilder {x: 0.0, y:0.0, radius:0.0 }
     }
 
-    /* Take a mutable self borrow and return the mutable self borrow so that mutating methods 
+    /* Take a mutable self borrow and return the mutable self borrow so that mutating methods
        can be chained to build the circle.
      */
     fn x(&mut self, x:f64) ->&mut CircleBuilder {
@@ -97,8 +97,7 @@ impl Geometry for Rectangle {
    Traits can also be used as a bound for types in generic function.
    print_area below is valid only for objects that implement the Geometry trait.
 */
-fn print_area<T: Geometry> (shape: T)
-{
+fn print_area<T> (shape: T) where T : Geometry {
     println!("The shape has an area {}", shape.area());
 }
 
