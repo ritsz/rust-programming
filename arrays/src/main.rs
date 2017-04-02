@@ -1,4 +1,6 @@
 
+use std::fmt;
+
 struct Circle {
     x: f64,
     y: f64,
@@ -93,11 +95,18 @@ impl Geometry for Rectangle {
     }
 }
 
+impl fmt::Debug for Rectangle {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "Rectangle length {}, breadth {}", self.length, self.breadth)
+    }
+}
+
 /*
    Traits can also be used as a bound for types in generic function.
    print_area below is valid only for objects that implement the Geometry trait.
 */
-fn print_area<T> (shape: T) where T : Geometry {
+fn print_area<T> (shape: T) where T : fmt::Debug + Geometry {
+    println!("{:?}", shape);
     println!("The shape has an area {}", shape.area());
 }
 
