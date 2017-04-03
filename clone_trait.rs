@@ -8,6 +8,7 @@ use std::fmt;
 
    We use 'a to specify that reference stays till the lifetime of the struct.
    This is called lifetime specifier.
+
  */
 #[derive(Copy)]
 struct Data<'a> {
@@ -38,6 +39,11 @@ impl<'a> fmt::Debug for Data<'a> {
     }
 }
 
+
+struct Foo<'a> {
+    x: &'a i32,
+}
+
 fn main()
 {
     let string = "Hello World".to_string();
@@ -49,4 +55,17 @@ fn main()
     cloned_obj.name = "Jane";
     cloned_obj.age = 43;
     println!("{:?} \n{:?}", obj, cloned_obj);
+
+/* LIFETIMES:
+    let x;                    // -+ `x` comes into scope.
+                              //  |
+    {                         //  |
+        let y = &5;           // ---+ `y` comes into scope.
+        let f = Foo { x: y }; // ---+ `f` comes into scope.
+        x = &f.x;             //  | | This causes an error.
+    }                         // ---+ `f` and y go out of scope.
+                              //  |
+    // Error: borrowed value does not live long enough. Lifetime of f.x is much smaller that x
+    println!("{}", x);
+  */
 }
