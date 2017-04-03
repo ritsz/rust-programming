@@ -43,4 +43,10 @@ fn main()
     let string = "Hello World".to_string();
     let s2 = string.clone();
     println!("{} and {}", string , s2 );
+
+    let obj = Data{name: "John", age : 42};
+    let mut cloned_obj = obj.clone();
+    cloned_obj.name = "Jane";
+    cloned_obj.age = 43;
+    println!("{:?} \n{:?}", obj, cloned_obj);
 }
