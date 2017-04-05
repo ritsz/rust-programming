@@ -6,7 +6,7 @@ struct Data {
 
 impl Drop for Data {
     fn drop(&mut self) {
-        println!("Name {} of age {}", self.name, self.age);
+        println!("Name {} of age {} is about to die", self.name, self.age);
     }
 }
 
