@@ -41,4 +41,6 @@ fn main() {
     let fib_it = Fibonacci { curr:1, next:2};
     let fib_out = fib_it.take(15).collect::<Vec<_>>();
     println!("{:?}", fib_out);
+
+    /*TODO: What about .iter() then */
 }
