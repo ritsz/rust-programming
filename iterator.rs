@@ -1,3 +1,4 @@
+#![allow(dead_code)]
 struct CountUp {
 current: usize,
 }
@@ -28,6 +29,45 @@ impl Iterator for Fibonacci {
     }
 }
 
+struct Buffer<T> {
+    size: usize,
+    data: Vec<T>
+}
+/* the parameter type `T` may not live long enough.
+ * reference type `&'a Buffer<T>` might outlive the data it points at
+ * data: &'a Buffer<T>. Thus T should also have lifetime of 'a
+ */
+struct BufferIterator<'a, T> where T: 'a {
+    data: &'a Buffer<T>,
+    index: usize,
+}
+
+
+/* Implement a generic buffer */
+impl<T> Buffer<T> {
+    fn iter(&self) -> BufferIterator<T> {
+        BufferIterator {
+            data: self,
+            index: 0,
+        }
+    }
+}
+
+/* Item has to be a reference or else the Item has to be a type
+ * that implements Copy
+ */
+impl<'a, T> Iterator for BufferIterator<'a, T> where T:'a {
+    type Item = &'a T;
+    fn next(&mut self) -> Option<Self::Item> {
+            if self.index < self.data.size  {
+                let ref _data = self.data.data[self.index];
+                self.index = self.index + 1;
+                Some(_data)
+            } else {
+                None
+            }
+    }
+}
 
 fn main() {
     let iterator = CountUp { current: 0 };
@@ -42,5 +82,7 @@ fn main() {
     let fib_out = fib_it.take(15).collect::<Vec<_>>();
     println!("{:?}", fib_out);
 
-    /*TODO: What about .iter() then */
+    let vec : Vec<String> = vec!["Hello".to_string(), "World".to_string(), "Good".to_string(), "Bye".to_string()];
+    let buf = Buffer{size:4, data: vec};
+    println!("{:?}", buf.iter().count());
 }
