@@ -3,14 +3,16 @@ extern crate pnet;
 use pnet::datalink::{self, NetworkInterface};
 
 /* Define a module here. Implementation will look for a file named server.rs */
-mod server;
+pub mod server;
 
 /* Different module, looks for a folder named layer and a file layer/mod.rs */
-mod layer;
+pub mod layer;
 
 /* Different modules can have same names. */
-mod client {
-    fn connect() {
+/* Make the module public */
+pub mod client {
+    /* Made the function publically available */
+    pub fn connect() {
     }
 }
 
