@@ -15,5 +15,5 @@ fn main() {
                 Ordering::Acquire),
                 Err(false));
     assert_eq!(some_bool.load(Ordering::Relaxed), false);
-    println!("All OK");
+    println!("All Ok");
 }
