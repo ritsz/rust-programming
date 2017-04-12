@@ -79,6 +79,25 @@ impl<T> IntoIterator for Buffer<T> {
     }
 }
 
+/*
+ * into_iter for reference on buffer.
+ * This can help us do for x in &buf
+ * T here is buffer type and we define impl on &Buffer<T>
+ * Item type is a reference to the elements &T
+ * Iterator type is the BufferIterator we implemented.
+ * into_iter needs to just return the BufferIterator using the iter()
+ * implementation we did already.
+ * This again highlights the point that iter() is same as into_iter(&self).
+ */
+impl<'a, T> IntoIterator for &'a Buffer<T> {
+    type Item = &'a T;
+    type IntoIter = BufferIterator<'a, T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.iter()
+    }
+}
+
 fn main() {
     let iterator = CountUp { current: 0 };
     let output = iterator.take(20).collect::<Vec<_>>();
@@ -114,8 +133,13 @@ fn main() {
     for x in &buf {
         println!("{:?}", x);
     }
+    /* We used reference into_iter so we are good to use it again */
+
+    for x in buf {
+        println!("{:?}", x);
+    }
     /* Value moved so we can't use anymore. */
-    /* println!("{:?}", buf.iter().count()); */
+    // println!("{:?}", buf.iter().count());
 
     let vec : Vec<String> = vec!["Trello".to_string(), "Troll".to_string(), "Food".to_string(), "Tye".to_string()];
     /* 
