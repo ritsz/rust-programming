@@ -84,9 +84,17 @@ fn main() {
 
     let vec : Vec<String> = vec!["Hello".to_string(), "World".to_string(), "Good".to_string(), "Bye".to_string()];
     let buf = Buffer{size:4, data: vec};
+
+    /*
+     * buf.iter() is just a shorthand for IntoIterator::into_iter(&buf).
+     * The iter() impl used &self for accessing.
+     */
+    for x in buf.iter() {
+        println!("{:?}", x);
+    }
     println!("{:?}", buf.iter().count());
 
-    let vec : Vec<String> = vec!["Hello".to_string(), "World".to_string(), "Good".to_string(), "Bye".to_string()];
+    let vec : Vec<String> = vec!["Trello".to_string(), "Troll".to_string(), "Food".to_string(), "Tye".to_string()];
     /* 
      * Remember, if we do for x in vec, the values are moved and consumed by loop.
      * vec.iter() will implement iterators that will be consumed instead of data.
