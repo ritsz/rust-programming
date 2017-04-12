@@ -69,6 +69,16 @@ impl<'a, T> Iterator for BufferIterator<'a, T> where T:'a {
     }
 }
 
+
+impl<T> IntoIterator for Buffer<T> {
+    type Item = T;
+    type IntoIter = ::std::vec::IntoIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
+
 fn main() {
     let iterator = CountUp { current: 0 };
     let output = iterator.take(20).collect::<Vec<_>>();
@@ -92,7 +102,20 @@ fn main() {
     for x in buf.iter() {
         println!("{:?}", x);
     }
+    /* Value not moved so we can still use. */
     println!("{:?}", buf.iter().count());
+
+    /*
+     * Once we implemeted the IntoIterator, we can use for x in buf directly. But into_iter takes value "into"
+     * itself so a move happens, unless you implement an IntoIterator for reference and then do 
+     * for x in &buf.
+     */
+
+    for x in &buf {
+        println!("{:?}", x);
+    }
+    /* Value moved so we can't use anymore. */
+    /* println!("{:?}", buf.iter().count()); */
 
     let vec : Vec<String> = vec!["Trello".to_string(), "Troll".to_string(), "Food".to_string(), "Tye".to_string()];
     /* 
