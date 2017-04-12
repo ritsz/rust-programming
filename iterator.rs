@@ -85,4 +85,15 @@ fn main() {
     let vec : Vec<String> = vec!["Hello".to_string(), "World".to_string(), "Good".to_string(), "Bye".to_string()];
     let buf = Buffer{size:4, data: vec};
     println!("{:?}", buf.iter().count());
+
+    let vec : Vec<String> = vec!["Hello".to_string(), "World".to_string(), "Good".to_string(), "Bye".to_string()];
+    /* 
+     * Remember, if we do for x in vec, the values are moved and consumed by loop.
+     * vec.iter() will implement iterators that will be consumed instead of data.
+     * Rust seems to be move by default in most scenarios unless Copy is implemented.
+     */
+    for x in vec.iter() {
+        println!("{:?}", x);
+    }
+    println!("{:?}", vec);
 }
