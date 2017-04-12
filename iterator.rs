@@ -151,4 +151,10 @@ fn main() {
         println!("{:?}", x);
     }
     println!("{:?}", vec);
+
+    let buf = Buffer{size:4, data: vec};
+    /* Value is moved using into_iter and collected in new vector v. */
+    let v : Vec<String>  = buf.into_iter().collect();
+
+    println!("{:?}", v);
 }
