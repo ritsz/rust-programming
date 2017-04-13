@@ -98,6 +98,26 @@ impl<'a, T> IntoIterator for &'a Buffer<T> {
     }
 }
 
+/*
+ * FromIterator can create the implementing structure from an iterator.
+ * T is the type of the buffer
+ * I is the type of Iterator
+ */
+use std::iter::FromIterator;
+
+impl<T> FromIterator<T> for Buffer<T> {
+    fn from_iter<I>(iter: I) -> Self where I : IntoIterator<Item=T> {
+        let mut vec = Vec::new();
+        let mut _size = 0;
+
+        for i in iter {
+            _size = _size + 1;
+            vec.push(i);
+        }
+        Buffer{size:_size, data: vec}
+    }
+}
+
 fn main() {
     let iterator = CountUp { current: 0 };
     let output = iterator.take(20).collect::<Vec<_>>();
@@ -126,7 +146,7 @@ fn main() {
 
     /*
      * Once we implemeted the IntoIterator, we can use for x in buf directly. But into_iter takes value "into"
-     * itself so a move happens, unless you implement an IntoIterator for reference and then do 
+     * itself so a move happens, unless you implement an IntoIterator for reference and then do
      * for x in &buf.
      */
 
@@ -142,7 +162,7 @@ fn main() {
     // println!("{:?}", buf.iter().count());
 
     let vec : Vec<String> = vec!["Trello".to_string(), "Troll".to_string(), "Food".to_string(), "Tye".to_string()];
-    /* 
+    /*
      * Remember, if we do for x in vec, the values are moved and consumed by loop.
      * vec.iter() will implement iterators that will be consumed instead of data.
      * Rust seems to be move by default in most scenarios unless Copy is implemented.
@@ -157,4 +177,12 @@ fn main() {
     let v : Vec<String>  = buf.into_iter().collect();
 
     println!("{:?}", v);
+
+
+    let numvec = vec![10, 8, 6, 4, 2, 0, 12];
+    let buffer_num = Buffer::from_iter(numvec.into_iter());
+
+    for x in buffer_num.iter() {
+        println!("{:?}", x);
+    }
 }
