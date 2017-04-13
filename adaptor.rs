@@ -1,9 +1,17 @@
 use std::fmt;
 
-#[derive(Debug)]
 enum Many {
     Number(i32),
     Alpha(String),
+}
+
+impl fmt::Debug for Many {
+    fn fmt(&self, fm: &mut fmt::Formatter) -> fmt::Result {
+        match *self {
+            Many::Number(num) => write!(fm, "{}", num),
+            Many::Alpha(ref string) => write!(fm, "{}", string),
+        }
+    }
 }
 
 /* Takes a string and parses it to Many */
