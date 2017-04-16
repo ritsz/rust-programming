@@ -12,4 +12,14 @@ fn main() {
         }
     }
     println!("{:?} {:?}", unsafe{*old}, unsafe{*some_ptr.load(Ordering::SeqCst)});
+
+
+    let ptr = &mut 15;
+let some_ptr  = AtomicPtr::new(ptr);
+
+let other_ptr   = some_ptr.load(Ordering::SeqCst);
+let another_ptr = &mut 100;
+
+let value = some_ptr.compare_and_swap(other_ptr, another_ptr, Ordering::Relaxed);
+println!("{:?} {:?}", unsafe{*value}, unsafe{*some_ptr.load(Ordering::SeqCst)})
 }
