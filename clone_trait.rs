@@ -47,8 +47,8 @@ struct Foo<'a> {
 fn main()
 {
     let string = "Hello World".to_string();
-    let s2 = string.clone();
-    println!("{} and {}", string , s2 );
+    let string2 = string.clone();
+    println!("{} and {}", string , string2 );
 
     let obj = Data{name: "John", age : 42};
     let mut cloned_obj = obj.clone();
