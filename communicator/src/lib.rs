@@ -17,15 +17,19 @@ pub mod client {
     }
 }
 
+/* Only compile this for cargo test builds */
+/* Tests can call only public modules and functions. */
 #[cfg(test)]
 mod tests {
     #[test]
     fn it_works() {
+        println!("Let's see if this works");
     }
 
     #[test]
     fn explore() {
-        use client;
+        use super::*;
+        println!("Let's check the value");
         assert_eq!(client::connect(), Err(1));
     }
 }
