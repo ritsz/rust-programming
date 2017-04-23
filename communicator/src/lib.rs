@@ -12,7 +12,8 @@ pub mod layer;
 /* Make the module public */
 pub mod client {
     /* Made the function publically available */
-    pub fn connect() {
+    pub fn connect() -> Result<u32, u32> {
+        Err(1)
     }
 }
 
@@ -20,5 +21,11 @@ pub mod client {
 mod tests {
     #[test]
     fn it_works() {
+    }
+
+    #[test]
+    fn explore() {
+        use client;
+        assert_eq!(client::connect(), Err(1));
     }
 }
