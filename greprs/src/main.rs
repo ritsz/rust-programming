@@ -2,7 +2,9 @@ use std::env;
 use std::fs::File;
 use std::io::prelude::*;
 use std::process;
+
 /* Handle the configs*/
+#[derive(Debug)]
 struct Config {
     query: String,
     filename: String,
@@ -18,8 +20,8 @@ impl Config {
         }
 
         /* Create a clone of the values so that they can be used as values in Config */
-        let query = args[1].clone();
-        let filename = args[2].clone();
+        let query = args[2].clone();
+        let filename = args[1].clone();
 
         Ok(Config {
             query: query,
@@ -49,9 +51,28 @@ fn main() {
             process::exit(1);
             });
     
-    let mut fd = File::open(config.filename).expect("File not found");
-    let mut contents = String::new();
-    fd.read_to_string(&mut contents).expect("something went wrong reading the file");
+    println!("{:?}", config);
+    
+    /* Pattern matching on return data */
+    if let Err(e) = run(config) {
+        println!("Application error: {}", e);
+        process::exit(1);
+    }
+}
 
-    println!("{:?}", contents);
+use std::error::Error;
+/* We need a function that returns unit Ok and can return many errors.
+   One way could be :
+        fn run<T> (config: Config) -> Result<(), T> where T : Error {
+   But again here, calling run(config) will ask us to give a type T, which we can't know before hand.
+   Error depends on runtime here. We should use Object traits.
+ */
+fn run(config: Config) -> Result<(), Box<Error>> {
+    let mut f = File::open(config.filename)?;
+    let mut contents = String::new();
+    f. read_to_string(&mut contents)?;
+
+    println!("With content:\n{:?}", contents);
+
+   Ok(())
 }
