@@ -10,7 +10,8 @@ use std::fs::{self, DirEntry};
 use std::path::Path;
 use std::os::unix::fs::MetadataExt;
 
-pub extern "C" fn scan(dir: &str) {
+#[no_mangle]
+fn scan(dir: &str) {
     let path = Path::new(dir);
     println!("Checking path {:?}", path.to_str().unwrap());
     /* This scan function will be called only for dir */
@@ -38,4 +39,14 @@ mod tests {
         use super::*;
         scan(&"/home/ritsz/Programming/Rust/filescanner");
     }
+}
+
+use std::ffi::{CStr, CString};
+use std::os::raw::c_char;
+
+#[no_mangle]
+pub extern "C" fn scan_interface(string: *const c_char) {
+    let owned_string: String = unsafe { CStr::from_ptr(string).to_str().unwrap().into() };
+    println!("Scanning {:?}", owned_string);
+    scan(&owned_string);
 }

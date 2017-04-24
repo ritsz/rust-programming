@@ -3,7 +3,7 @@
 #1. Add the crate-type to Cargo.toml and build
 
 #2. Compile
-gcc test_rust.c -L. -lrustlib -o test
+g++ test_rust.c -L. -lrustlib -o test
 
 #3. Link at run time
 

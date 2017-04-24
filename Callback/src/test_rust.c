@@ -1,9 +1,11 @@
-#include <stdio.h>
-#include <stdlib.h>
+#include <iostream>
+#include <string>
 
-extern void callback(uint32_t);
+extern "C" {
+    extern void callback(const char *);
+}
 
 int main()
 {
-    callback(10);
+    callback("HELLO");
 }
