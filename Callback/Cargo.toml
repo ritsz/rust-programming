@@ -1,0 +1,10 @@
+[package]
+name = "Callback"
+version = "0.1.0"
+authors = ["ritsz <r.ranjan789@gmail.com>"]
+
+[dependencies]
+
+[lib]
+name = "rustlib"
+crate-type = ["dylib"]

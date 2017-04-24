@@ -2,6 +2,7 @@ extern crate greprs;
 
 use std::env;
 use std::process;
+use std::io::prelude::*;
 use greprs::Config;
 
 fn main() {
@@ -10,6 +11,7 @@ fn main() {
         println!(".. {:?}", x);
     }
     */
+    let mut fmt = std::io::stderr();
     let args: Vec<String> = env::args().collect();
 
     /*
@@ -20,16 +22,15 @@ fn main() {
 
     /* Unwrap of handle the error using closure */
     let config = Config::new(&args).unwrap_or_else(|err| {
-            println!("Problem parsing arguments: {}", err);
-            process::exit(1);
-            });
-    
+        writeln!(&mut fmt, "Problem parsing arguments: {}", err);
+        process::exit(1);
+        });
+
     println!("{:?}", config);
-    
+
     /* Pattern matching on return data */
     if let Err(e) = greprs::run(config) {
-        println!("Application error: {}", e);
+        writeln!(&mut fmt, "Application error: {}", e);
         process::exit(1);
     }
 }
-

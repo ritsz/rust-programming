@@ -72,8 +72,6 @@ pub fn run(config: Config) -> Result<(), Box<Error>> {
 
     }
 
-
-
     Ok(())
 }
 
