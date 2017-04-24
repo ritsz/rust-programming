@@ -6,7 +6,6 @@
    2. Given a directory path, scan all files and add dirs to the list.
  */
 
-use std::io;
 use std::fs::{self, DirEntry};
 use std::path::Path;
 use std::os::unix::fs::MetadataExt;
