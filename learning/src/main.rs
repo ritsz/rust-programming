@@ -15,7 +15,7 @@
    9. Multiple refernces borrow require a lifetime parameter.
  */
 fn main() {
-    let (string, z)   = ("Hello World".to_string(), "Original String".to_string());
+    let (string, zString)   = ("Hello World".to_string(), "Original String".to_string());
     /*
         mutable_borrow(&mut string, 1);
         error: cannot borrow immutable local variable `string` as mutable
@@ -25,7 +25,7 @@ fn main() {
     mutable_borrow(&mut mut_string, 3);
     mutable_move(mut_string, 4);
 
-    let borrow_string:&String = &z;
+    let borrow_string:&String = &zString;
     immutable_borrow(borrow_string, 5);
     println!("6. {}", immutable_borrow_move(borrow_string, 6));
 
