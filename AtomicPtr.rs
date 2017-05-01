@@ -1,9 +1,9 @@
 fn main() {
     use std::sync::atomic::{AtomicPtr, Ordering};
 
-    let some_ptr = AtomicPtr::new(&mut 5);
+    let some_ptr = AtomicPtr::new(&mut "HELLO");
 
-    let new = &mut 10;
+    let new = &mut "WORLD";
     let mut old = some_ptr.load(Ordering::Relaxed);
     loop {
         match some_ptr.compare_exchange_weak(old, new, Ordering::SeqCst, Ordering::Relaxed) {
@@ -11,7 +11,9 @@ fn main() {
             Err(x) => old = x,
         }
     }
-    println!("{:?} {:?}", unsafe{*old}, unsafe{*some_ptr.load(Ordering::SeqCst)});
+    let val = unsafe{*some_ptr.load(Ordering::SeqCst)};
+    println!("1. {:?} {:?}", unsafe{*old}, unsafe{*some_ptr.load(Ordering::SeqCst)});
+    println!("2. {:?} {:?} {:?}", val, unsafe{*old}, unsafe{*some_ptr.load(Ordering::SeqCst)});
 
 
     let ptr = &mut 15;
