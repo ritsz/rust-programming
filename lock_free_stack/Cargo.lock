@@ -1,0 +1,4 @@
+[root]
+name = "lock_free_stack"
+version = "0.1.0"
+
