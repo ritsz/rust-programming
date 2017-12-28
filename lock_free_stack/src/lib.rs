@@ -15,34 +15,34 @@ impl<T> Debug for Node<T> where T: Debug {
         write!(f, "{:?} -> ", self.elem)
     }
 }
- #[derive(Debug)]
 
+#[derive(Debug)]
 enum Link<T> {
     Empty,
-    More(Box<Node<T>>),
+    Cons(Box<Node<T>>),
 }
 
-struct stack<T> {
+struct Stack<T> {
     tail_ptr : Link<T>,
-    refCount : AtomicUsize,
+    ref_count : AtomicUsize,
 }
 
-impl<T> stack<T> where T: Debug {
+impl<T> Stack<T> where T: Debug {
     fn new() -> Self {
-        stack {
+        Stack {
             tail_ptr : Link::Empty,
-            refCount : std::sync::atomic::ATOMIC_USIZE_INIT,
+            ref_count : std::sync::atomic::ATOMIC_USIZE_INIT,
         }
     }
     fn insert(&mut self, data : T) {
         /* Box of new Node */
-        let mut new_node : Box<Node<T>> = Box::new ( Node {
+        let new_node : Box<Node<T>> = Box::new ( Node {
             elem : data,
             next : mem::replace(&mut self.tail_ptr, Link::Empty),
         } );
 
         /* New tail Link */
-        self.tail_ptr = Link::More(new_node);
+        self.tail_ptr = Link::Cons(new_node);
     }
 
     fn debug(&self) {
@@ -51,7 +51,7 @@ impl<T> stack<T> where T: Debug {
         loop {
             match itr {
                 &Link::Empty => break,
-                &Link::More(ref x) => {
+                &Link::Cons(ref x) => {
                     println!("{:?}", x);
                     itr = &x.next;
                 }
@@ -65,14 +65,14 @@ mod tests {
     use super::*;
     #[test]
     fn insert_one() {
-        let mut test = stack::<u32>::new();
+        let mut test = Stack::<u32>::new();
         test.insert(10);
         test.debug();
     }
 
     #[test]
     fn insert_multi() {
-        let mut test = stack::<u32>::new();
+        let mut test = Stack::<u32>::new();
         test.insert(10);
         test.insert(5);
         test.insert(20);
