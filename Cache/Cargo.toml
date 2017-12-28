@@ -1,0 +1,7 @@
+[package]
+name = "Cache"
+version = "0.1.0"
+authors = ["ritsz"]
+
+[dependencies]
+futures = "0.1"
