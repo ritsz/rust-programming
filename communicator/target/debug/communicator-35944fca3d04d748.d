@@ -1,1 +1,0 @@
-/home/ritsz/Programming/Rust/communicator/target/debug/communicator-35944fca3d04d748: /home/ritsz/Programming/Rust/communicator/src/layer/network.rs /home/ritsz/Programming/Rust/communicator/src/lib.rs /home/ritsz/Programming/Rust/communicator/src/layer/mod.rs /home/ritsz/Programming/Rust/communicator/src/server.rs

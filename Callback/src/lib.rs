@@ -33,7 +33,7 @@ impl<'a, T> Iterator for CArrayIter<'a, T> {
 	}
 }
 
-struct CArrayInt<'a, T> where T:'a {
+struct CArrayInt<'a, T> where T:'a + std::marker::Sized {
 	ptr: *mut  T,
 	size: usize,
 	phantom: PhantomData<&'a T>,

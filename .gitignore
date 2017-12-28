@@ -1,3 +1,6 @@
-ffi_binding/
-guessing_game/
 */target/*
+*/target/*/*
+*/target/*/*/*
+*/*/target/*
+*/*/target/*/*
+

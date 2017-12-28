@@ -70,15 +70,6 @@ impl<'a, T> Iterator for BufferIterator<'a, T> where T:'a {
 }
 
 
-impl<T> IntoIterator for Buffer<T> {
-    type Item = T;
-    type IntoIter = ::std::vec::IntoIter<T>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.data.into_iter()
-    }
-}
-
 /*
  * into_iter for reference on buffer.
  * This can help us do for x in &buf
@@ -115,6 +106,15 @@ impl<T> FromIterator<T> for Buffer<T> {
             vec.push(i);
         }
         Buffer{size:_size, data: vec}
+    }
+}
+
+impl<T> IntoIterator for Buffer<T> {
+    type Item = T;
+    type IntoIter = ::std::vec::IntoIter<T>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
     }
 }
 
