@@ -1,7 +1,6 @@
 extern crate libc;
 
-use libc::{c_int, size_t};
-use std::ffi::{CStr, CString};
+use std::ffi::CStr;
 use std::os::raw::c_char;
 use std::mem;
 use std::ops::{Index, IndexMut};
@@ -13,15 +12,15 @@ extern {
 	fn create_array(array: *mut u32, num: u32); 
 }
 
-struct CArrayIter<'a> {
+struct CArrayIter<'a, T> where T: 'a {
 	curr: usize,
-	data: &'a CArrayInt<'a>,
-	phantom: PhantomData<&'a u32>,
+	data: &'a CArrayInt<'a, T>,
+	phantom: PhantomData<&'a T>,
 }
 
 /* The iterator returns a non mutable reference from the buffer for each element. */
-impl<'a> Iterator for CArrayIter<'a> {
-	type Item = &'a u32;
+impl<'a, T> Iterator for CArrayIter<'a, T> {
+	type Item = &'a T;
 
 	fn next(&mut self) -> Option<Self::Item> {
 		if self.curr < self.data.size {
@@ -34,32 +33,32 @@ impl<'a> Iterator for CArrayIter<'a> {
 	}
 }
 
-struct CArrayInt<'a> {
-	ptr: *mut  u32,
+struct CArrayInt<'a, T> where T:'a {
+	ptr: *mut  T,
 	size: usize,
-	phantom: PhantomData<&'a u32>,
+	phantom: PhantomData<&'a T>,
 }
 
-impl<'a>  CArrayInt<'a> {
-	fn new(size: usize) -> CArrayInt<'a> {
+impl<'a, T>  CArrayInt<'a, T> {
+	fn new(size: usize) -> CArrayInt<'a, T> {
 		
-		let iptr: *mut u32 = unsafe { libc::malloc(size * mem::size_of::<u32>() as libc::size_t) as *mut u32 };
+		let iptr: *mut u32 = unsafe { libc::malloc(size * mem::size_of::<T>() as libc::size_t) as *mut u32 };
 		assert!(!iptr.is_null());
 
 		unsafe {
-			create_array(&mut *iptr, size as u32);
+			create_array(&mut *iptr , size as u32);
 		}
 
 		CArrayInt {
-			ptr: iptr,
+			ptr: iptr as *mut T,
 			size: size,
 			phantom: PhantomData,
 		}
 	}
 
 	/* Create the iterator object */
-	fn iter(&self) -> CArrayIter {
-		println!("ITER");
+	fn iter(&self) -> CArrayIter<T> {
+		println!("GENERIC ITER");
 		CArrayIter {
 			curr: 0,
 			data: self,
@@ -72,9 +71,9 @@ impl<'a>  CArrayInt<'a> {
  * NOTE: The IntoIterator is implemented on a reference of CArrayInt, so that we are allowed to do 
  * for x in &buf(). If reference is not added, we can only do for x in buf, which would move the buffer.
  */
-impl<'a> IntoIterator for &'a CArrayInt<'a> {
-	type Item = &'a u32;
-	type IntoIter = CArrayIter<'a>;
+impl<'a, T> IntoIterator for &'a CArrayInt<'a, T>  {
+	type Item = &'a T;
+	type IntoIter = CArrayIter<'a, T>;
 
 	/* Define the into_iterator function that tells how the iterator of this struct is like */
 	fn into_iter(self) -> Self::IntoIter {
@@ -82,8 +81,8 @@ impl<'a> IntoIterator for &'a CArrayInt<'a> {
 	}
 }
 
-impl<'a> Index<u32> for CArrayInt<'a>{
-	type Output = u32;
+impl<'a, T> Index<u32> for CArrayInt<'a, T> {
+	type Output = T;
 
 	fn index(&self, index: u32) -> &Self::Output {
 		unsafe {
@@ -93,8 +92,8 @@ impl<'a> Index<u32> for CArrayInt<'a>{
 }
 
 /* Index operator that return mutable references, so that index operator can update the buffers */
-impl<'a> IndexMut<u32> for CArrayInt<'a>{
-	fn index_mut(&mut self, index: u32) -> &mut u32 {
+impl<'a, T> IndexMut<u32> for CArrayInt<'a, T>  {
+	fn index_mut(&mut self, index: u32) -> &mut T  {
 		unsafe {
 			self.ptr.offset(index as isize).as_mut().unwrap()
 		}
@@ -102,7 +101,7 @@ impl<'a> IndexMut<u32> for CArrayInt<'a>{
 }
 
 /* Destructor that frees up the memory given by libc */
-impl<'a> Drop for CArrayInt<'a> {
+impl<'a, T> Drop for CArrayInt<'a, T> {
 	fn drop(&mut self) {
 		println!("Dropping!");
 		unsafe {
@@ -115,7 +114,7 @@ impl<'a> Drop for CArrayInt<'a> {
 #[no_mangle]
 pub extern "C" fn callback(a: *const c_char) {
 
-	let mut ptr = CArrayInt::new(5);
+	let mut ptr : CArrayInt<u32> = CArrayInt::new(5);
 
 	for i in 0..5 {
 		println!("{:?}", ptr[i]);
